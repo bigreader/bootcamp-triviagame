@@ -3,46 +3,52 @@ const quiz = [
 	question: "Which of the following does not form cubic or right-angled crystals?",
 	answers: ["Pyrite", "Garnet", "Bismuth", "Halite"],
 	correct: 1,
-	reveal: "Natural garnet crystals typically form as either dodecahedrons or trapezohedrons, two complex and unusually spherical polyhedra."
+	reveal: "Natural garnet crystals typically form as either dodecahedrons or trapezohedrons, two complex and unusually spherical polyhedra.",
+	image: "garnet"
 },{
 	question: "Which semiprecious gem is formed from the same material as much of the Earth's mantle?",
 	answers: ["Rhodonite", "Obsidian", "Peridot", "Carnelian"],
 	correct: 2,
-	reveal: "The upper layers of the mantle are mainly peridotite, a bright green blend of olivine and pyroxene."
+	reveal: "The upper layers of the mantle are mainly peridotite, a bright green blend of olivine and pyroxene.",
+	image: "peridot"
 },{
 	question: "What unusual quality is alexandrite noted for?",
 	answers: ["Changes color when brought outdoors", "Easily fractures into identical smaller crystals", "Burns readily in high-oxygen environments", "Gives off a distinct odor when scratched"],
 	correct: 0,
-	reveal: "Alexandrite appears pale green in direct sunlight and purple-red in incandescent lighting. The effect is caused by impurities absorbing a narrow band of yellow light."
+	reveal: "Alexandrite appears pale green in direct sunlight and purple-red in incandescent lighting. The effect is caused by impurities absorbing a narrow band of yellow light.",
+	image: "alexandrite"
 },{
 	question: "Which two gemstones are actually two varieties of the same mineral?",
 	answers: ["Opal & Pearl", "Lapis Lazuli & Aquamarine", "Onyx & Jet", "Ruby & Sapphire"],
 	correct: 3,
-	reveal: "Corundum gemstones come in many different colors, most of which are known as sapphire. Ruby is simply a red variety, with chromium impurities being the only chemical difference."
+	reveal: "Corundum gemstones come in many different colors, most of which are known as sapphire. Ruby is simply a red variety, with chromium impurities being the only chemical difference.",
+	image: "ruby-sapphire"
 },{
 	question: "How long will I keep coming back to a crystal theme for these homework assignments?",
 	answers: ["This is the last one", "Just a couple more", "Up to the first group project", "Until you tell me to stop"],
 	correct: 3,
-	reveal: "I'm not even that interested in gemology. I just thought it would make a good set of Hangman words."
+	reveal: "I'm not even that interested in gemology. I just thought it would make a good set of Hangman words.",
+	image: "citrine"
 }];
 
 const startTime = 20;
 
 var question;
-var nextTimeout;
 var time;
 var timerInterval;
-var results = {
-	correct: 0,
-	incorrect: 0,
-	timeout: 0
-}
+var nextTimeout;
+var results;
 
 $(document).ready(function() {
 
 
 	$("#startButton").click(function() {
 		$(this).hide();
+		results = { // clear any previous results
+			correct: 0,
+			incorrect: 0,
+			timeout: 0
+		}
 		loadQuestion(quiz[0]);
 	});
 
@@ -79,12 +85,12 @@ $(document).ready(function() {
 		$(".progress-bar").removeClass("timing").css("width", "0");
 
 		time = startTime+1;
-		timer();
-		timerInterval = setInterval(timer, 1000);
+		timerTick();
+		timerInterval = setInterval(timerTick, 1000);
 	}
 
 
-	function timer() {
+	function timerTick() {
 		time--;
 		$("#timerDisplay").text(":" + ((time<10)? "0":"") + time);
 
@@ -158,6 +164,7 @@ $(document).ready(function() {
 	function nextQuestion() {
 		clearTimeout(nextTimeout);
 
+		// check if there's questions left
 		var nextQuestion = quiz[1 + quiz.indexOf(question)];
 		if (nextQuestion) {
 			loadQuestion(quiz[1 + quiz.indexOf(question)]);
@@ -170,8 +177,7 @@ $(document).ready(function() {
 
 
 	function showResults() {
-		$("#questionTitle").text("Quiz Complete!");
-		$("#questionText").text("");
+		$("#questionTitle").text("Quiz Complete");
 
 		$("#timerDisplay").hide();
 
@@ -186,8 +192,13 @@ $(document).ready(function() {
 		var colors = ["success", "danger", "warning"];
 
 		$("#answerList").empty().append(stats.map(stat =>
-			answerBase.clone().text(stat).addClass("list-group-item-" + colors.shift())
+			answerBase
+			.clone()
+			.text(stat)
+			.addClass("list-group-item-" + colors.shift())
 			));
+
+		$("#questionText").text("You got " + (100 * results.correct / quiz.length) + "% right!");
 
 		// reset the reveal info
 		$("#resultText").text("").removeClass();
@@ -195,7 +206,9 @@ $(document).ready(function() {
 		$("#nextButton").hide();
 		$(".progress-bar").removeClass("timing").css("width", "0");
 
-	}
+		// reactivate start button
+		$("#startButton").text("Try Again").show();
 
+	}
 
 });
