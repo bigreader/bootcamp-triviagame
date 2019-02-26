@@ -12,6 +12,14 @@
   100% { color: black; }
 }
 
+#answerList .answer.answer-revealCorrect {
+	color: #155724;
+	background: #c3e6cb;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
 #answerList .answer.answer-correct {
 	color: #fff;
 	background: #28a745;
@@ -22,9 +30,9 @@
 	background: #dc3545;
 }
 
-#answerList .answer.answer-revealCorrect {
-	color: #155724;
-	background: #c3e6cb;
+.answerIcon {
+	width: 1.5em;
+	height: 1.5em;
 }
 
 #resultText {

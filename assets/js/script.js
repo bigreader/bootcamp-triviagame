@@ -1,11 +1,5 @@
 const quiz = [
 {
-	question: "Which of the following does not form cubic or right-angled crystals?",
-	answers: ["Pyrite", "Garnet", "Bismuth", "Halite"],
-	correct: 1,
-	reveal: "Natural garnet crystals typically form as either dodecahedrons or trapezohedrons, two complex and unusually spherical polyhedra.",
-	image: "garnet"
-},{
 	question: "Which semiprecious gem is formed from the same material as much of the Earth's mantle?",
 	answers: ["Rhodonite", "Obsidian", "Peridot", "Carnelian"],
 	correct: 2,
@@ -17,6 +11,12 @@ const quiz = [
 	correct: 0,
 	reveal: "Alexandrite appears pale green in direct sunlight and purple-red in incandescent lighting. The effect is caused by impurities absorbing a narrow band of yellow light.",
 	image: "alexandrite"
+},{
+	question: "Which of the following does not form cubic or right-angled crystals?",
+	answers: ["Pyrite", "Garnet", "Bismuth", "Halite"],
+	correct: 1,
+	reveal: "Natural garnet crystals typically form as either dodecahedrons or trapezohedrons, two complex and unusually spherical polyhedra.",
+	image: "garnet"
 },{
 	question: "Which two gemstones are actually two varieties of the same mineral?",
 	answers: ["Opal & Pearl", "Lapis Lazuli & Aquamarine", "Onyx & Jet", "Ruby & Sapphire"],
@@ -49,6 +49,7 @@ $(document).ready(function() {
 			incorrect: 0,
 			timeout: 0
 		}
+		$("#timerDisplay").show();
 		loadQuestion(quiz[0]);
 	});
 
@@ -103,8 +104,7 @@ $(document).ready(function() {
 			console.log("correct answer", this.innerText);
 			results.timeout++; // save this moment for end results
 
-			// find and highlight correct answer in green
-			$(".answer[data-answer='" + question.correct + "']").addClass("answer-revealCorrect");
+			revealCorrect();
 
 			$("#resultText").text("🤔 Time’s up").addClass("text-warning");
 
@@ -122,6 +122,7 @@ $(document).ready(function() {
 
 			// highlight in green
 			$(this).addClass("answer-correct");
+			revealCorrect();
 
 			$("#resultText").text("😄 Correct!").addClass("text-success");
 
@@ -129,9 +130,9 @@ $(document).ready(function() {
 			console.log("incorrect answer", this.innerText);
 			results.incorrect++; // save this moment for blackmail
 
-			// highlight in red, find and highlight correct answer in green
+			// highlight in red
 			$(this).addClass("answer-incorrect");
-			$(".answer[data-answer='" + question.correct + "']").addClass("answer-revealCorrect");
+			revealCorrect();
 
 			$("#resultText").text("😕 Incorrect").addClass("text-danger");
 
@@ -139,6 +140,18 @@ $(document).ready(function() {
 
 		endQuestion();
 		
+	}
+
+	// find and highlight correct answer in green
+	function revealCorrect() {
+		
+		$(".answer[data-answer='" + question.correct + "']")
+		.addClass("answer-revealCorrect")
+		.append($('<img class="answerIcon">')
+			.attr("src", "assets/img/" + question.image + ".png")
+		);
+
+
 	}
 
 
