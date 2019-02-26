@@ -1,3 +1,17 @@
+#timerDisplay {
+	font-size: 2em;
+	font-variant-numeric: tabular-nums;
+}
+
+#timerDisplay.flash {
+	animation: flash 1s ease-out infinite;
+}
+
+@keyframes flash {
+  0% { color: #ffc107; }
+  100% { color: black; }
+}
+
 #answerList .answer.answer-correct {
 	color: #fff;
 	background: #28a745;

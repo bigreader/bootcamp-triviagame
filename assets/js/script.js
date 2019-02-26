@@ -26,10 +26,12 @@ const quiz = [
 	reveal: "I'm not even that interested in gemology. I just thought it would make a good set of Hangman words."
 }];
 
-const questionTime = 15;
+const startTime = 20;
 
 var question;
 var nextTimeout;
+var time;
+var timerInterval;
 var results = {
 	correct: 0,
 	incorrect: 0,
@@ -75,6 +77,33 @@ $(document).ready(function() {
 		$("#revealText").text("");
 		$("#nextButton").hide();
 		$(".progress-bar").removeClass("timing").css("width", "0");
+
+		time = startTime+1;
+		timer();
+		timerInterval = setInterval(timer, 1000);
+	}
+
+
+	function timer() {
+		time--;
+		$("#timerDisplay").text(":" + ((time<10)? "0":"") + time);
+
+		if (time === 5) {
+			$("#timerDisplay").addClass("flash");
+		}
+
+		if (time <= 0) {
+
+			console.log("correct answer", this.innerText);
+			results.timeout++; // save this moment for end results
+
+			// find and highlight correct answer in green
+			$(".answer[data-answer='" + question.correct + "']").addClass("answer-revealCorrect");
+
+			$("#resultText").text("🤔 Time’s up").addClass("text-warning");
+
+			endQuestion();
+		}
 	}
 
 
@@ -119,6 +148,9 @@ $(document).ready(function() {
 		$("#nextButton").show();
 		$(".progress-bar").addClass("timing").css("width", "100%");
 
+		clearInterval(timerInterval);
+		$("#timerDisplay").removeClass("flash");
+
 		nextTimeout = setTimeout(nextQuestion, 10000);
 
 	}
@@ -141,6 +173,8 @@ $(document).ready(function() {
 		$("#questionTitle").text("Quiz Complete!");
 		$("#questionText").text("");
 
+		$("#timerDisplay").hide();
+
 		// we'll reuse our answer section for displaying stats
 
 		var answerBase = $('<div class="list-group-item"></div>');
@@ -149,9 +183,10 @@ $(document).ready(function() {
 		results.incorrect + " incorrect",
 		results.timeout + " timed out"
 		];
+		var colors = ["success", "danger", "warning"];
 
 		$("#answerList").empty().append(stats.map(stat =>
-			answerBase.clone().text(stat)
+			answerBase.clone().text(stat).addClass("list-group-item-" + colors.shift())
 			));
 
 		// reset the reveal info
