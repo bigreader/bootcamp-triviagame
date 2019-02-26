@@ -1,0 +1,32 @@
+#answerList .answer.answer-correct {
+	color: #fff;
+	background: #28a745;
+}
+
+#answerList .answer.answer-incorrect {
+	color: #fff;
+	background: #dc3545;
+}
+
+#answerList .answer.answer-revealCorrect {
+	color: #155724;
+	background: #c3e6cb;
+}
+
+#resultText {
+	font-size: 1.2em;
+	font-weight: bold;
+}
+
+.progress {
+	height: 4px;
+	background: none;
+}
+
+.progress-bar {
+	background: white;
+}
+
+.progress-bar.timing {
+	transition: width 9.75s linear;
+}
