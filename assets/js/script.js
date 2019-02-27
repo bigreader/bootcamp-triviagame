@@ -75,7 +75,6 @@ $(document).ready(function() {
 			answerBase
 			.clone() // new item
 			.text(answer) // set the text
-			.click(answerClicked) // register click handler
 			.attr("data-answer", question.answers.indexOf(answer)) // mark with index
 			));
 
@@ -112,6 +111,8 @@ $(document).ready(function() {
 		}
 	}
 
+	// set up click handler for dynamic answers
+	$("#answerList").on("click", ".answer", answerClicked);
 
 	function answerClicked() {
 
