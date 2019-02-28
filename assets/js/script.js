@@ -33,11 +33,11 @@ const quiz = [
 
 const startTime = 20;
 
-var question;
-var time;
-var timerInterval;
-var nextTimeout;
-var results;
+var question; // current question object
+var time; // remaining time for question
+var timerInterval; // Interval for timer
+var nextTimeout; // Timeout for next question
+var results; // object to track correct/incorrect/timeout counts
 
 $(document).ready(function() {
 
@@ -84,23 +84,21 @@ $(document).ready(function() {
 		$("#nextButton").hide();
 		$(".progress-bar").removeClass("timing").css("width", "0");
 
-		time = startTime+1;
-		timerTick();
-		timerInterval = setInterval(timerTick, 1000);
+		time = startTime+1; // reset timer
+		timerTick(); // reset display
+		timerInterval = setInterval(timerTick, 1000); // start
 	}
 
 
 	function timerTick() {
 		time--;
-		$("#timerDisplay").text(":" + ((time<10)? "0":"") + time);
+		$("#timerDisplay").text(":" + ((time<10)? "0":"") + time); // format and display time
 
-		if (time === 5) {
+		if (time === 5) { // start flashing once we run low on time
 			$("#timerDisplay").addClass("flash");
 		}
 
-		if (time <= 0) {
-
-			console.log("correct answer", this.innerText);
+		if (time <= 0) { // time's up
 			results.timeout++; // save this moment for end results
 
 			revealCorrect();
@@ -145,14 +143,12 @@ $(document).ready(function() {
 
 	// find and highlight correct answer in green
 	function revealCorrect() {
-		
 		$(".answer[data-answer='" + question.correct + "']")
-		.addClass("answer-revealCorrect")
-		.append($('<img class="answerIcon">')
+		.addClass("answer-revealCorrect") // turn it green
+		.append(
+			$('<img class="answerIcon">') // add icon
 			.attr("src", "assets/img/" + question.image + ".png")
 		);
-
-
 	}
 
 
@@ -168,42 +164,47 @@ $(document).ready(function() {
 		$("#nextButton").show();
 		$(".progress-bar").addClass("timing").css("width", "100%");
 
+		// stop question timer
 		clearInterval(timerInterval);
 		$("#timerDisplay").removeClass("flash");
 
+		// start timout to auto continue
 		nextTimeout = setTimeout(nextQuestion, 10000);
 
 	}
+	
+
+	$("#nextButton").click(nextQuestion);
 
 	function nextQuestion() {
-		clearTimeout(nextTimeout);
+		clearTimeout(nextTimeout); // stop auto continue
 
 		// check if there's questions left
-		var nextQuestion = quiz[1 + quiz.indexOf(question)];
-		if (nextQuestion) {
-			loadQuestion(quiz[1 + quiz.indexOf(question)]);
+		var next = quiz[1 + quiz.indexOf(question)];
+		if (next) {
+			loadQuestion(next);
 		} else {
 			showResults();
 		}
 	}
 
-	$("#nextButton").click(nextQuestion);
-
 
 	function showResults() {
 		$("#questionTitle").text("Quiz Complete");
-
 		$("#timerDisplay").hide();
+
+		// show a summary score
+		$("#questionText").text("You got " + (100 * results.correct / quiz.length) + "% right!");
 
 		// we'll reuse our answer section for displaying stats
 
-		var answerBase = $('<div class="list-group-item"></div>');
-		var stats = [
+		var answerBase = $('<div class="list-group-item"></div>'); // simpler base element
+		var stats = [ // create our own list of rows
 		results.correct + " correct",
 		results.incorrect + " incorrect",
 		results.timeout + " timed out"
 		];
-		var colors = ["success", "danger", "warning"];
+		var colors = ["success", "danger", "warning"]; // add colors to each row
 
 		$("#answerList").empty().append(stats.map(stat =>
 			answerBase
@@ -211,8 +212,6 @@ $(document).ready(function() {
 			.text(stat)
 			.addClass("list-group-item-" + colors.shift())
 			));
-
-		$("#questionText").text("You got " + (100 * results.correct / quiz.length) + "% right!");
 
 		// reset the reveal info
 		$("#resultText").text("").removeClass();
